@@ -13,7 +13,7 @@ const s3 = new AWS.S3({
 const uploadFile = (fileName) => {
 
     const path = require("path");
-    const fileContent = fs.readFileSync(path.resolve(__dirname, "../Backend/uploads/images/"+fileName));
+    const fileContent = fs.readFileSync(path.resolve(__dirname, "./uploads/images/"+fileName));
 
     const params = {
         Bucket: BUCKET_NAME,

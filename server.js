@@ -3,10 +3,10 @@ var bodyParser = require("body-parser");
 var multer = require('multer');
 var app = express();
 const fs = require('fs');
-
 const AWS = require('aws-sdk');
-
 const BUCKET_NAME = 'cc-project-input-images';
+AWS.config.update({region: 'us-east-1'});
+var sqs = new AWS.SQS({accessKeyId: 'AKIA5NQGXQ7RWW26VIB4', secretAccessKey: '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', apiVersion: '2012-11-05'});
 
 const s3 = new AWS.S3({
     accessKeyId: 'AKIA5NQGXQ7RWW26VIB4',
@@ -29,7 +29,8 @@ const uploadFile = (fileName) => {
             throw err;
         }
         console.log(`File uploaded successfully. ${data.Location}`);
-    });
+        sendMessage(data.Location)
+      });   
 };
 
 app.use(bodyParser.json());
@@ -57,13 +58,41 @@ app.post('/api/photo',function(req,res){
             return res.end("Error uploading file.");
         }
         for (const index in req.files) {  
-          console.log(`${req.files[index].filename} is at position ${index}`)
           uploadFile(req.files[index].filename)
+
         }
         res.end("File is uploaded");
+
     });
 
 });
+
+
+const sendMessage = (url) => {
+    var params = {
+        // Remove DelaySeconds parameter and value for FIFO queues
+       DelaySeconds: 10,
+       MessageAttributes: {
+         "S3_URL": {
+           DataType: "String",
+           StringValue: url
+         }
+       },
+       MessageBody: "S3 URLs.",
+       // MessageDeduplicationId: "TheWhistler",  // Required for FIFO queues
+       // MessageGroupId: "Group1",  // Required for FIFO queues
+       QueueUrl: "https://sqs.us-east-1.amazonaws.com/922358351843/cc-project1-sqs"
+     };
+     
+     sqs.sendMessage(params, function(err, data) {
+       if (err) {
+         console.log("Error", err);
+       } else {
+         console.log("Success", data.MessageId);
+       }
+     });
+}
+
 
 app.listen(3000,function(){
     console.log("Working on port 3000");

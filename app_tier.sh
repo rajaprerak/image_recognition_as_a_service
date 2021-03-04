@@ -1,5 +1,6 @@
 #!/bin/bash
 
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
-. ~/.nvm/nvm.sh
-nvm install node
+cd Listener
+node sqs_receive.js
+image_name=$(find ./ -type f \( -iname \.jpeg -o -iname \.jpg -o -iname \*.png \))
+python3 image_classification.py $image_name

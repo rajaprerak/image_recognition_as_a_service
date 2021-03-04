@@ -2,20 +2,20 @@ const AWS = require('aws-sdk');
 AWS.config.update({region: 'us-east-1'});
 var sqs = new AWS.SQS({accessKeyId: 'AKIA5NQGXQ7RWW26VIB4', secretAccessKey: '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', apiVersion: '2012-11-05'});
 
-const sendMessage = (url) => {
+const sendMessage = (output) => {
     var params = {
         // Remove DelaySeconds parameter and value for FIFO queues
-       DelaySeconds: 10,
+       DelaySeconds: 1,
        MessageAttributes: {
-         "S3_URL": {
+         'output': {
            DataType: "String",
-           StringValue: url
+           StringValue: output
          }
        },
-       MessageBody: "S3 URLs.",
+       MessageBody: "SQS Response.",
        // MessageDeduplicationId: "TheWhistler",  // Required for FIFO queues
        // MessageGroupId: "Group1",  // Required for FIFO queues
-       QueueUrl: "https://sqs.us-east-1.amazonaws.com/922358351843/cc-project1-sqs"
+       QueueUrl: "https://sqs.us-east-1.amazonaws.com/922358351843/cc-project1-sqs-response"
      };
      
      sqs.sendMessage(params, function(err, data) {
@@ -27,8 +27,8 @@ const sendMessage = (url) => {
      });
 }
 
-s3_url = ['https://cc-project-input-images.s3.amazonaws.com/test_0.JPEG','https://cc-project-input-images.s3.amazonaws.com/test_1.JPEG']
-for (const index in s3_url) {  
-    sendMessage(s3_url[index])
+key = 'test_0.JPEG'
+value = 'bathtub'
+sendMessage(key+'#'+value)
 
-  }
+ 

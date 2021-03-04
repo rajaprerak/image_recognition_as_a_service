@@ -70,7 +70,6 @@ app.post('/api/photo',function(req,res){
 
 const sendMessage = (url) => {
     var params = {
-        // Remove DelaySeconds parameter and value for FIFO queues
        DelaySeconds: 1,
        MessageAttributes: {
          "S3_URL": {
@@ -79,8 +78,6 @@ const sendMessage = (url) => {
          }
        },
        MessageBody: "S3 URLs.",
-       // MessageDeduplicationId: "TheWhistler",  // Required for FIFO queues
-       // MessageGroupId: "Group1",  // Required for FIFO queues
        QueueUrl: "https://sqs.us-east-1.amazonaws.com/922358351843/cc-project1-sqs"
      };
      

@@ -71,7 +71,7 @@ app.post('/api/photo',function(req,res){
 const sendMessage = (url) => {
     var params = {
         // Remove DelaySeconds parameter and value for FIFO queues
-       DelaySeconds: 10,
+       DelaySeconds: 1,
        MessageAttributes: {
          "S3_URL": {
            DataType: "String",

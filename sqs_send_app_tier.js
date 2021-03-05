@@ -79,7 +79,10 @@ fs.readFile('output.txt', 'utf8' , (err, data) => {
   })
   sendMessage(key+'#'+value)
   uploadFile(fileName)
+  fs.unlinkSync('output.txt')
+  fs.unlinkSync(fileName)
 })
+
 
 
  

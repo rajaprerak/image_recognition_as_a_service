@@ -68,26 +68,42 @@ app.post('/api/photo',function(req,res){
 
 });
 
-var NumOfMessages = 1000;
+var NumOfMessages = 0;
 
 app.get('/receive', function(req, res){
   
   var dataDict = {}
   while (true){
     
-    getQueueAttributes();
-    console.log("Num of msg (after fn): "+NumOfMessages)
+    var queParams = {
+      QueueUrl: "https://sqs.us-east-1.amazonaws.com/922358351843/cc-project1-sqs-response",
+      AttributeNames : ['All'],
+    };
+    sqs.getQueueAttributes(queParams, function(err, data){
+      console.log("Inside sqs.getQueueATtributes")
+      if (err) {
+             console.log("Error", err);
+           } else {
+             
+            NumOfMessages = parseInt(data['Attributes']['ApproximateNumberOfMessages']);
+            console.log(data);          
+            console.log(data['Attributes']['ApproximateNumberOfMessages']);
+            console.log("Num of msg after get Queue Attributes: "+NumOfMessages)
+          }              
+    });
+    
     if (NumOfMessages === 0){
       break;
-    }
     
-    receiveMessage();
+    }
+     receiveMessage()
+  }
+});
+    
     // store data in dict and return dictionary
     // console.log("Num of MESSAGES: "+NumOfMessages);
   
-   }
-   
-});
+  
 
 
 // function getQueueAttributes() {
@@ -116,22 +132,7 @@ app.get('/receive', function(req, res){
 // }
 
 const getQueueAttributes = () => {
-  var queParams = {
-    QueueUrl: "https://sqs.us-east-1.amazonaws.com/922358351843/cc-project1-sqs-response",
-    AttributeNames : ['All'],
-  };
-  sqs.getQueueAttributes(queParams, function(err, data){
-    console.log("Inside sqs.getQueueATtributes")
-    if (err) {
-           console.log("Error", err);
-         } else {
-           
-          NumOfMessages = parseInt(data['Attributes']['ApproximateNumberOfMessages']);
-          console.log(data);          
-          console.log(data['Attributes']['ApproximateNumberOfMessages']);
-          
-        }              
-  });
+  
 }
 
 

@@ -18,7 +18,7 @@ const uploadFile = (fileName) => {
 
     const path = require("path");
     const fileContent = fs.readFileSync(path.resolve(__dirname, "./uploads/"+fileName));
-
+    console.log(fileContent)
     const params = {
         Bucket: BUCKET_NAME,
         Key: fileName,
@@ -30,6 +30,7 @@ const uploadFile = (fileName) => {
             throw err;
         }
         console.log(`File uploaded successfully. ${data.Location}`);
+        console.log(data)
         sendMessage(data.Location)
       });   
 };

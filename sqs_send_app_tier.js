@@ -53,7 +53,7 @@ const uploadFile = (fileName) => {
     }
     //console.log(data)
     //console.log(`File uploaded successfully. ${data.Location}`);
-    sendMessage(data.Location)
+    //sendMessage(data.Location)
   });
   });
   

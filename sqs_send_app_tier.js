@@ -53,7 +53,7 @@ const uploadFile = (fileName) => {
     }
     //console.log(data)
     //console.log(`File uploaded successfully. ${data.Location}`);
-    sendMessage(data.Location)
+    //sendMessage(data.Location)
   });
   });
   
@@ -79,7 +79,10 @@ fs.readFile('output.txt', 'utf8' , (err, data) => {
   })
   sendMessage(key+'#'+value)
   uploadFile(fileName)
+  fs.unlinkSync('output.txt')
+  fs.unlinkSync(fileName)
 })
+
 
 
  

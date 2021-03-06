@@ -24,7 +24,7 @@ const s3 = new AWS.S3({
 
 var receiveParams = {
   AttributeNames: ["SentTimestamp"],
-  MaxNumberOfMessages: 1000,
+  MaxNumberOfMessages: 10,
   MessageAttributeNames: ["All"],
   QueueUrl: "https://sqs.us-east-1.amazonaws.com/922358351843/cc-project1-sqs-response",
   VisibilityTimeout: 1,

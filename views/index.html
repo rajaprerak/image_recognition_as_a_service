@@ -9,8 +9,21 @@
           method="post">
       <input type="file" name="userPhoto" multiple />
       <input type="submit" value="Upload Image" name="submit">
+      <input type='text' id='random' name='random'><br>
       <span id = "status"></span>
     </form>
+
+    <form id="getResult"
+          enctype="multipart/form-data"
+          action="/receive"
+          method="get">
+      <input type="submit" value="Show Results" name="submit">
+    </form>
+    <ul>
+      <% for(var item in DataDict) { %>
+      <li><%= item %></li>
+      <% } %>
+    </ul>
   </body>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
   <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>

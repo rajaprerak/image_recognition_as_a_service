@@ -24,7 +24,7 @@ const s3 = new AWS.S3({
 
 var receiveParams = {
   AttributeNames: ["SentTimestamp"],
-  MaxNumberOfMessages: 10,
+  MaxNumberOfMessages: 1000,
   MessageAttributeNames: ["All"],
   QueueUrl: "https://sqs.us-east-1.amazonaws.com/922358351843/cc-project1-sqs-response",
   VisibilityTimeout: 1,
@@ -153,7 +153,7 @@ var removeFromQueue = function(message) {
 
 const sendMessage = (url) => {
     var params = {
-       DelaySeconds: 1,
+       DelaySeconds: 0,
        MessageAttributes: {
          "S3_URL": {
            DataType: "String",

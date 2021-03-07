@@ -96,10 +96,10 @@ var dataDict = {}
 app.get('/receive', function(req, res){
   
   receiveMessage();
-  for (var key of Object.keys(dataDict)) {
-    console.log(key + " -> " + dataDict[key])
-  }
-  console.log("message: "+dataDict);
+  // for (var key of Object.keys(dataDict)) {
+  //   console.log(key + " -> " + dataDict[key])
+  // }
+  // console.log("message: "+dataDict);
   // dataDict['sample'] = 'sample';
   res.render("index", {dataDict:dataDict});
   // res.json(dataDict);
@@ -121,28 +121,26 @@ var receiveMessage = function() {
               // console.log("Number of messages received: "+NumOfMessages);
               // console.log("Received message: "+JSON.stringify(data.Messages[i]));
               // console.log("Message body: "+data.Messages[i].Body);                      
-              const recvDataStr = JSON.stringify(data.Messages[i]);
-              const recvData = data.Messages[i];
-              console.log("Data Received: "+recvData['MessageAttributes']['output']['StringValue']);
+              
+              const recvData = data.Messages[i];                            
               result = recvData['MessageAttributes']['output']['StringValue'].split("#");
               imageName = result[0];
-              ans = result[1];
-              console.log("Image: "+imageName);
-              console.log("Ans: "+ans);
+              ans = result[1];            
               dataDict[imageName] = ans;
               removeFromQueue(message);
           }
           receiveMessage();
       } else {
           setTimeout(function() {
-              receiveMessage()
+              receiveMessage();
           }, 10 * 1000);
-
+        // dataDict = {}
       }
   });
 };
 
 var removeFromQueue = function(message) {
+  console.log("Remove message from Queue")
   sqs.deleteMessage({
       QueueUrl : "https://sqs.us-east-1.amazonaws.com/922358351843/cc-project1-sqs-response",
       ReceiptHandle : message.ReceiptHandle

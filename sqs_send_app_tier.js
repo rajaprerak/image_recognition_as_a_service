@@ -84,20 +84,19 @@ fs.readFile('output.txt', 'utf8' , (err, data) => {
   fs.unlinkSync('output.txt')
   fs.unlinkSync(fileName)
 
-  var queueURL = "https://sqs.us-east-1.amazonaws.com/922358351843/cc-project1-sqs";
-  var params = {
+  var receiveParams = {
     AttributeNames: [
        "SentTimestamp"
     ],
-    MaxNumberOfMessages: 10,
+    MaxNumberOfMessages: 1,
     MessageAttributeNames: [
        "All"
     ],
-    QueueUrl: queueURL,
-    VisibilityTimeout: 1,
+    QueueUrl: "https://sqs.us-east-1.amazonaws.com/922358351843/cc-project1-sqs",
+    VisibilityTimeout: 10,
     WaitTimeSeconds: 0
    };
-  sqs.receiveMessage(params, function(err, data) {
+  sqs.receiveMessage(receiveParams, function(err, data) {
     if (err) {
       console.log("Receive Error", err);
     } else if (data.Messages) {

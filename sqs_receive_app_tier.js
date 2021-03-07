@@ -20,7 +20,7 @@ var params = {
     "All"
  ],
  QueueUrl: queueURL,
- VisibilityTimeout: 1,
+ VisibilityTimeout: 10,
  WaitTimeSeconds: 0
 };
 
@@ -57,7 +57,7 @@ const downloadFile = (fileName) => {
       if (err) {
           throw err
       }
-      fs.writeFileSync('./'+fileName, data.Body)
+      fs.writeFileSync('/home/ubuntu/classifier/'+fileName, data.Body)
       console.log('file downloaded successfully')
   })
 };

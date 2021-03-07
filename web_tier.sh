@@ -11,3 +11,6 @@ pm2 start server.js
 export AWS_ACCESS_KEY_ID=AKIA5NQGXQ7RWW26VIB4
 export AWS_SECRET_ACCESS_KEY=rHJO9tttT1BYnqPet9kyaZSXHZuU7YDVVkVEX7FM
 nohup java -jar sample-0.0.1-SNAPSHOT-new.jar &
+
+npm install node-ec2-metadata
+npm install shelljs

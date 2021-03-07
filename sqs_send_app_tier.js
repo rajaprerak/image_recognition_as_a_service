@@ -1,4 +1,5 @@
 const AWS = require('aws-sdk');
+const shell = require('shelljs')
 AWS.config.update({region: 'us-east-1'});
 var sqs = new AWS.SQS({accessKeyId: 'AKIA5NQGXQ7RWW26VIB4', secretAccessKey: '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', apiVersion: '2012-11-05'});
 const fs = require('fs')
@@ -70,6 +71,7 @@ fs.readFile('output.txt', 'utf8' , (err, data) => {
   }
   //console.log(data)
   key = data.split('#')[0]
+  key = key.split('/')[1]
   value = data.split('#')[1]
   file_content = '('+key+','+value+')'
   fileName = key.split('.')[0]+'.txt'
@@ -81,6 +83,31 @@ fs.readFile('output.txt', 'utf8' , (err, data) => {
   uploadFile(fileName)
   fs.unlinkSync('output.txt')
   fs.unlinkSync(fileName)
+
+  var queueURL = "https://sqs.us-east-1.amazonaws.com/922358351843/cc-project1-sqs";
+  var params = {
+    AttributeNames: [
+       "SentTimestamp"
+    ],
+    MaxNumberOfMessages: 10,
+    MessageAttributeNames: [
+       "All"
+    ],
+    QueueUrl: queueURL,
+    VisibilityTimeout: 1,
+    WaitTimeSeconds: 0
+   };
+  sqs.receiveMessage(params, function(err, data) {
+    if (err) {
+      console.log("Receive Error", err);
+    } else if (data.Messages) {
+      shell.exec('/home/ubuntu/app_tier.sh')
+    }
+    else{
+      shell.exec('/home/ubuntu/terminate_app_tier.sh')
+    }
+  });
+
 })
 
 

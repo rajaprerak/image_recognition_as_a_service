@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd controller
+cd /home/ubuntu/controller
 node sqs_receive_app_tier.js
 cd ..
 cd classifier
@@ -9,4 +9,3 @@ python3 image_classification.py $image_name
 cd ..
 cd controller
 node sqs_send_app_tier.js
-node terminate_instance.js

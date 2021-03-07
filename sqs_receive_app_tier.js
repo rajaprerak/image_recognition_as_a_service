@@ -57,7 +57,7 @@ const downloadFile = (fileName) => {
       if (err) {
           throw err
       }
-      fs.writeFileSync('./'+fileName, data.Body)
+      fs.writeFileSync('/home/ubuntu/classifier/'+fileName, data.Body)
       console.log('file downloaded successfully')
   })
 };

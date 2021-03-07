@@ -6,7 +6,7 @@ const fs = require('fs')
 const sendMessage = (output) => {
     var params = {
         // Remove DelaySeconds parameter and value for FIFO queues
-       DelaySeconds: 1,
+       DelaySeconds: 0,
        MessageAttributes: {
          'output': {
            DataType: "String",

@@ -3,13 +3,13 @@ AWS.config.update({region: 'us-east-1'});
 var sqs = new AWS.SQS({accessKeyId: 'AKIA5NQGXQ7RWW26VIB4', secretAccessKey: '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', apiVersion: '2012-11-05'});
 const fs = require('fs')
 
-const BUCKET_NAME = "cc-project-input-images"
+const BUCKET_NAME = "cc-project-input-image"
 var s3 = new AWS.S3({
     accessKeyId: 'AKIA5NQGXQ7RWW26VIB4',
     secretAccessKey: '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',
 })
 
-var queueURL = "https://sqs.us-east-1.amazonaws.com/922358351843/cc-project1-sqs-response";
+var queueURL = "https://sqs.us-east-1.amazonaws.com/981802952135/cc-project-sqs-response";
 
 var params = {
  AttributeNames: [

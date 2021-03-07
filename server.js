@@ -11,14 +11,14 @@ app.set("view engine", "ejs");
 
 const fs = require('fs');
 const AWS = require('aws-sdk');
-const BUCKET_NAME = 'cc-project-input-images';
+const BUCKET_NAME = 'cc-project-input-image';
 AWS.config.update({region: 'us-east-1'});
-var sqs = new AWS.SQS({accessKeyId: 'AKIA5NQGXQ7RWW26VIB4', secretAccessKey: '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', apiVersion: '2012-11-05'});
+var sqs = new AWS.SQS({accessKeyId: 'AKIA6JGAEEXD2JWXRFD2', secretAccessKey: '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', apiVersion: '2012-11-05'});
 
 
 const s3 = new AWS.S3({
-    accessKeyId: 'AKIA5NQGXQ7RWW26VIB4',
-    secretAccessKey: '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'
+    accessKeyId: 'AKIA6JGAEEXD2JWXRFD2',
+    secretAccessKey: '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'
 });
 
 
@@ -26,7 +26,7 @@ var receiveParams = {
   AttributeNames: ["SentTimestamp"],
   MaxNumberOfMessages: 10,
   MessageAttributeNames: ["All"],
-  QueueUrl: "https://sqs.us-east-1.amazonaws.com/922358351843/cc-project1-sqs-response",
+  QueueUrl: "https://sqs.us-east-1.amazonaws.com/981802952135/cc-project-sqs-response",
   VisibilityTimeout: 1,
   WaitTimeSeconds: 0
   };
@@ -88,7 +88,7 @@ app.post('/api/photo',function(req,res){
 
 var NumOfMessages = 10;
 var queParams = {
-  QueueUrl: "https://sqs.us-east-1.amazonaws.com/922358351843/cc-project1-sqs-response",
+  QueueUrl: "https://sqs.us-east-1.amazonaws.com/981802952135/cc-project-sqs-response",
   AttributeNames : ['All'],
 };
 
@@ -142,7 +142,7 @@ var receiveMessage = function() {
 var removeFromQueue = function(message) {
   console.log("Remove message from Queue")
   sqs.deleteMessage({
-      QueueUrl : "https://sqs.us-east-1.amazonaws.com/922358351843/cc-project1-sqs-response",
+      QueueUrl : "https://sqs.us-east-1.amazonaws.com/981802952135/cc-project-sqs-response",
       ReceiptHandle : message.ReceiptHandle
   }, function(err, data) {
       err && console.log(err);
@@ -159,7 +159,7 @@ const sendMessage = (url) => {
          }
        },
        MessageBody: "S3 URLs.",
-       QueueUrl: "https://sqs.us-east-1.amazonaws.com/922358351843/cc-project1-sqs"
+       QueueUrl: "https://sqs.us-east-1.amazonaws.com/981802952135/cc-project-sqs-input"
      };
      
      sqs.sendMessage(params, function(err, data) {

@@ -49,7 +49,9 @@ const uploadFile = (fileName) => {
         // console.log(`File uploaded successfully. ${data.Location}`);
         // console.log(data)
         sendMessage(data.Location)
-      });   
+        fs.unlinkSync('uploads/'+fileName);
+      });  
+
 };
 
 var storage = multer.diskStorage({

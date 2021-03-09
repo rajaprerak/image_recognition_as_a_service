@@ -1,0 +1,1 @@
+## This folder contains images which need to be uploaded into S3 Bucket.

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Image Recognition as a Service</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="font-awesome.min.css">
+    <style>
+      body {
+        background-image: url('bg4.png');
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: 100% 100%;
+      }
+    </style>
+
+  </head>
+
+  <body>
+
+    <div class="container py-5">
+      <!-- For demo purpose -->
+      <header class="text-white text-center">
+        <h4>Image Recognition as a Service</h4>        
+      </header>
+
+      <div class="row py-3">
+        <div class="col-lg-5 mx-auto">
+          <form action="/api/photo" method="post" id="uploadForm" enctype="multipart/form-data">
+            <!-- <input type="file" name="userPhoto" multiple /> -->
+            <!-- <input class="display-4" type="submit" value="Upload Image" name="submit">       -->
+            <!-- <span id = "status"></span> -->
+
+            <!-- <input id="upload" type="file" onchange="readURL(this);" class="form-control border-0" accept="image/*" name="userPhoto" multiple>
+            <label id="upload-label" for="upload" class="font-weight-light text-muted"></label>
+            <input type="file" name="userPhoto" multiple />
+            <input type="submit" value="Upload Image" name="submit">
+            <span id = "status"></span> -->
+              
+            <div class="input-group">
+              
+              <input name="userPhoto" type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload" multiple>
+              <button class="btn btn-success" name="submit" type="submit" id="inputGroupFileAddon04"><span style="color: white;">Upload</span></button>
+            </div>
+          </form>
+
+          <form id="getResult" action="/receive" method="get">
+            <!-- <input type="submit" value="Show Results" name="submit"> -->
+            
+            <center>
+              <span class="text-white" id = "status"></span>
+              <br>
+              <br>
+              <input class="btn btn-success m-0 rounded-pill px-4 text-white" type="submit" value="Get Results">
+            </center>
+            
+          </form>                                        
+        </div>
+      </div>
+      
+      
+      
+      <center>
+        <span class="text-white" style="margin-left: 0px;">Total Results: <%= dictSize %></span> 
+      </center>
+      <br>
+      <% if(dictSize !== 0) { %>
+      <center>
+        <table class="table table-sm text-white" style="width: auto;">
+          <thead>
+            <tr>            
+              <th scope="col">Input Image</th>
+              <th scope="col">Classification Result</th>            
+            </tr>
+          </thead>
+          <tbody>
+            <% for( k of Object.keys(dataDict)) {%>
+            <tr>            
+              <td><%= k%></td>
+              <td><%= dataDict[k]%></td>
+            </tr>    
+            <% } %>      
+          </tbody>
+        </table>
+      </center>    
+      
+      <% } %>      
+      
+      
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+   <script src="script.js"></script>
+   <script src="jquery-3.3.1.slim.min.js"></script>
+   <script src="bootstrap.bundle.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>
+  </body>
+  
+  <script>
+  $(document).ready(function() {
+     $('#uploadForm').submit(function() {
+        $("#status").empty().text("File is uploading...");
+        $(this).ajaxSubmit({
+            error: function(xhr) {
+          status('Error: ' + xhr.status);
+            },
+            success: function(response) {
+        console.log(response)
+            $("#status").empty().text(response);
+            }
+    });
+    return false;
+    });    
+});
+</script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>
+
+</html>

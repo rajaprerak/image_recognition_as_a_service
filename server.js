@@ -1,13 +1,19 @@
 var express = require("express");
-
 var bodyParser = require("body-parser");
 var multer = require('multer');
-var app = express();
-app.set('views', __dirname);
-app.engine('html', require('ejs').renderFile);
-app.set("view engine", "ejs");
+var path = require('path');
 
-// app.set('view engine', 'html');
+var app = express();
+// var http = require('http');
+// var https = require('https');
+// app.set('views', __dirname, '/views');
+app.set('views', path.join(__dirname, 'views'));
+// console.log(path.join(__dirname, 'views'));
+
+app.engine('html', require('ejs').renderFile);
+app.use(express.static('public'))
+app.set("view engine", "ejs");
+app.use(bodyParser.json());
 
 const fs = require('fs');
 const AWS = require('aws-sdk');
@@ -21,21 +27,15 @@ const s3 = new AWS.S3({
     secretAccessKey: '/i4iG65bDXU9qpqUI0G+cdxyjc1mhnt/FyF8dTLl'
 });
 
-
-var receiveParams = {
-  AttributeNames: ["SentTimestamp"],
-  MaxNumberOfMessages: 10,
-  MessageAttributeNames: ["All"],
-  QueueUrl: "https://sqs.us-east-1.amazonaws.com/981802952135/cc-project-sqs-response",
-  VisibilityTimeout: 1,
-  WaitTimeSeconds: 0
-  };
+// Global variables
+var dataDict = {}
+var dictSize = 0;
 
 const uploadFile = (fileName) => {
 
     const path = require("path");
     const fileContent = fs.readFileSync(path.resolve(__dirname, "./uploads/"+fileName));
-    console.log(fileContent)
+    // console.log(fileContent)
     const params = {
         Bucket: BUCKET_NAME,
         Key: fileName,
@@ -46,14 +46,11 @@ const uploadFile = (fileName) => {
         if (err) {
             throw err;
         }
-        console.log(`File uploaded successfully. ${data.Location}`);
-        console.log(data)
+        // console.log(`File uploaded successfully. ${data.Location}`);
+        // console.log(data)
         sendMessage(data.Location)
       });   
 };
-
-app.use(bodyParser.json());
-
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -65,48 +62,18 @@ var storage = multer.diskStorage({
 })
 
 var upload = multer({ storage: storage }).array('userPhoto',1000);
-app.get('/',function(req,res){
-      res.sendFile(__dirname + "/index.html");
-});
 
-app.post('/api/photo',function(req,res){
-    upload(req,res,function(err) {
-
-        if(err) {
-          console.log(err)
-            return res.end("Error uploading file.");
-        }
-        for (const index in req.files) {  
-          uploadFile(req.files[index].filename)
-
-        }
-        res.end("File is uploaded");
-
-    });
-
-});
-
-var NumOfMessages = 10;
-var queParams = {
-  QueueUrl: "https://sqs.us-east-1.amazonaws.com/981802952135/cc-project-sqs-response",
-  AttributeNames : ['All'],
-};
-
-var dataDict = {}
-app.get('/receive', function(req, res){
-  
-  receiveMessage();
-  // for (var key of Object.keys(dataDict)) {
-  //   console.log(key + " -> " + dataDict[key])
-  // }
-  // console.log("message: "+dataDict);
-  // dataDict['sample'] = 'sample';
-  res.render("index", {dataDict:dataDict});
-  // res.json(dataDict);
-
-});
   
 var receiveMessage = function() {
+  var receiveParams = {
+    AttributeNames: ["SentTimestamp"],
+    MaxNumberOfMessages: 10,
+    MessageAttributeNames: ["All"],
+    QueueUrl: "https://sqs.us-east-1.amazonaws.com/981802952135/cc-project-sqs-response",
+    VisibilityTimeout: 1,
+    WaitTimeSeconds: 0
+    };
+  
   sqs.receiveMessage(receiveParams, function(err, data) {
       if(err){
           console.log(err);
@@ -118,6 +85,7 @@ var receiveMessage = function() {
               var message = data.Messages[i];              
               // execute logic
               NumOfMessages = data.Messages.length;
+
               // console.log("Number of messages received: "+NumOfMessages);
               // console.log("Received message: "+JSON.stringify(data.Messages[i]));
               // console.log("Message body: "+data.Messages[i].Body);                      
@@ -171,6 +139,37 @@ const sendMessage = (url) => {
      });
 }
 
+
+app.get('/',function(req,res){
+  // res.sendFile(__dirname + "/index.html");
+  res.render('index', {dataDict:dataDict, dictSize: dictSize})
+
+});
+
+app.post('/api/photo',function(req,res){
+upload(req,res,function(err) {
+
+    if(err) {
+      console.log(err)
+        return res.end("Error uploading file.");
+    }
+    // Reset the dictionary when user uploads new images.
+    dataDict = {};
+    for (const index in req.files) {  
+      uploadFile(req.files[index].filename)
+
+    }
+    res.end("File uploaded! Starting the process...");
+
+});
+
+});
+
+app.get('/receive', function(req, res){
+  receiveMessage();
+  dictSize = Object.keys(dataDict).length;
+  res.render("index", {dataDict:dataDict, dictSize: dictSize});
+});
 
 app.listen(3000,function(){
     console.log("Working on port 3000");

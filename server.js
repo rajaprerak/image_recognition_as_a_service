@@ -161,7 +161,7 @@ upload(req,res,function(err) {
       uploadFile(req.files[index].filename)
 
     }
-    res.end("File uploaded! Starting the process...");
+    res.end("Files uploaded! Process started...");
 
 });
 
